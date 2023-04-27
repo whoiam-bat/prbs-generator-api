@@ -6,7 +6,7 @@ def generate_prbs(degree, polynomial):
     result = {
         'degree': degree, 'polynomial': polynomial, 'seed': to_binary(seed, degree), 'prbs': '',
         'rang_formula': 0, 'rang_experimental': 0, 'polynomial_type': '',
-        'register_states': [], 'accompanying_matrix': []
+        'register_states': [], 'accompanying_matrix': get_accompanying_matrix(polynomial, degree)
     }
 
     taps = get_polynomial_degrees(polynomial)
@@ -31,6 +31,20 @@ def generate_prbs(degree, polynomial):
     else: result['polynomial_type'] = 'C-sequence'
 
     return result
+
+
+def get_accompanying_matrix(polynomial, degree):
+    accompanying_matrix = [polynomial]
+
+    identity = [[int(i == j) for j in range(degree)] for i in range(degree - 1)]
+
+    for i in range(degree - 1):
+        temp = ''
+        for j in range(degree):
+            temp += str(identity[i][j])
+        accompanying_matrix.append(temp)
+    print(accompanying_matrix)
+    return accompanying_matrix
 
 
 def get_polynomial_degrees(polynomial):
