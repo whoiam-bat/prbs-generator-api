@@ -10,6 +10,7 @@ class OutputData(BaseModel):
     rang_formula: int
     rang_experimental: int
     polynomial_type: str
+    hamming_weight: int = 0
     register_states: List[str]
     accompanying_matrix: List[str] = []
 

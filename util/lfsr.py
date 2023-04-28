@@ -5,7 +5,7 @@ def generate_prbs(degree, polynomial):
 
     result = {
         'degree': degree, 'polynomial': polynomial, 'seed': to_binary(seed, degree), 'prbs': '',
-        'rang_formula': 0, 'rang_experimental': 0, 'polynomial_type': '',
+        'rang_formula': 0, 'rang_experimental': 0, 'polynomial_type': '', 'hamming_weight': 0,
         'register_states': [], 'accompanying_matrix': get_accompanying_matrix(polynomial, degree)
     }
 
@@ -19,6 +19,9 @@ def generate_prbs(degree, polynomial):
             out ^= ((start >> it) & 0b1)
 
         start = (start >> 1) | (out << (degree - 1))
+
+        if start & 1:
+            result['hamming_weight'] += 1
 
         result['prbs'] += str(start & 1)
         result['register_states'].append(to_binary(start, degree))
