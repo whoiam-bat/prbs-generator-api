@@ -20,10 +20,10 @@ def generate_prbs(degree, polynomial):
 
         start = (start >> 1) | (out << (degree - 1))
 
-        if start & 1:
+        if out & 0b1:
             result['hamming_weight'] += 1
 
-        result['prbs'] += str(start & 1)
+        result['prbs'] += str(out & 0b1)
         result['register_states'].append(to_binary(start, degree))
         if start == seed: break
 
@@ -46,7 +46,7 @@ def get_accompanying_matrix(polynomial, degree):
         for j in range(degree):
             temp += str(identity[i][j])
         accompanying_matrix.append(temp)
-    print(accompanying_matrix)
+
     return accompanying_matrix
 
 
