@@ -11,4 +11,4 @@ app = FastAPI(
 
 @app.post("/lfsr", response_model=out_lfsr.OutputData)
 def generate_prbs(input_data: in_lfsr.InputData):
-    return lfsr.generate_prbs(input_data.degree, input_data.polynomial)
+    return lfsr.generate_prbs(input_data.degree, input_data.polynomial, input_data.polynomial_gf2)

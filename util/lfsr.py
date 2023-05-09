@@ -1,7 +1,11 @@
-def generate_prbs(degree, polynomial):
+import math
+
+
+def generate_prbs(degree, polynomial, polynomial_gf2):
     seed = 0b1
     rang = (2 ** degree) - 1
     start = seed
+    j = parse_polynomial_gf2(polynomial_gf2)
 
     result = {
         'degree': degree, 'polynomial': polynomial, 'seed': to_binary(seed, degree), 'prbs': '',
@@ -11,9 +15,7 @@ def generate_prbs(degree, polynomial):
 
     taps = get_polynomial_degrees(polynomial)
 
-    i = 0
     while True:
-        i += 1
         out = 0
         for it in taps:
             out ^= ((start >> it) & 0b1)
@@ -28,10 +30,12 @@ def generate_prbs(degree, polynomial):
         if start == seed: break
 
     result['rang_formula'] = rang
-    result['rang_experimental'] = i
+    result['rang_experimental'] = rang / (math.gcd(rang, j))
 
-    if i == rang: result['polynomial_type'] = 'M-sequence'
-    else: result['polynomial_type'] = 'C-sequence'
+    if result['rang_formula'] == result['rang_experimental']:
+        result['polynomial_type'] = 'M-sequence'
+    else:
+        result['polynomial_type'] = 'C-sequence'
 
     return result
 
@@ -65,3 +69,8 @@ def to_binary(num, num_bits):
     binary_str = bin(num)[2:]
     padded_str = binary_str.zfill(num_bits)
     return padded_str
+
+
+def parse_polynomial_gf2(polynomial_gf2):
+    j = polynomial_gf2.split(" ")[0]
+    return int(j)
