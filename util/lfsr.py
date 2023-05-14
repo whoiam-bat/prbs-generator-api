@@ -8,8 +8,7 @@ def generate_prbs(degree, polynomial, polynomial_gf2):
     j = parse_polynomial_gf2(polynomial_gf2)
 
     result = {
-        'degree': degree, 'polynomial': polynomial, 'seed': to_binary(seed, degree), 'prbs': '',
-        'rang_formula': 0, 'rang_experimental': 0, 'polynomial_type': '', 'hamming_weight': 0,
+        'prbs': '', 'rang_formula': 0, 'rang_experimental': 0, 'polynomial_type': '', 'hamming_weight': 0,
         'register_states': [], 'accompanying_matrix': get_accompanying_matrix(polynomial, degree)
     }
 

@@ -3,9 +3,6 @@ from typing import List
 
 
 class OutputData(BaseModel):
-    degree: int
-    polynomial: str
-    seed: str
     prbs: str
     rang_formula: int
     rang_experimental: int
