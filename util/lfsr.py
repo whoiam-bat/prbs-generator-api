@@ -1,4 +1,4 @@
-import math
+import numpy as np
 
 
 def generate_prbs(degree, polynomial, polynomial_gf2):
@@ -9,12 +9,15 @@ def generate_prbs(degree, polynomial, polynomial_gf2):
 
     result = {
         'prbs': '', 'rang_formula': 0, 'rang_experimental': 0, 'polynomial_type': '', 'hamming_weight': 0,
-        'register_states': [], 'accompanying_matrix': get_accompanying_matrix(polynomial, degree)
+        'register_states': [], 'accompanying_matrix': get_accompanying_matrix(polynomial, degree),
+        'prbs_indexes': [], 'acf': []
     }
 
     taps = get_polynomial_degrees(polynomial)
 
+    i = 0
     while True:
+        i += 1
         out = 0
         for it in taps:
             out ^= ((start >> it) & 0b1)
@@ -26,17 +29,35 @@ def generate_prbs(degree, polynomial, polynomial_gf2):
 
         result['prbs'] += str(out & 0b1)
         result['register_states'].append(to_binary(start, degree))
-        if start == seed: break
+        if start == seed:
+            break
 
     result['rang_formula'] = rang
-    result['rang_experimental'] = rang / (math.gcd(rang, j))
+    result['rang_experimental'] = i
 
     if result['rang_formula'] == result['rang_experimental']:
         result['polynomial_type'] = 'M-sequence'
     else:
-        result['polynomial_type'] = 'C-sequence'
+        result['polynomial_type'] = ' S-sequence'
+
+    result['prbs_indexes'] = get_sequence_indexes(result['prbs'])
+    result['acf'] = get_acf([int(x) for x in result['prbs']])
 
     return result
+
+
+def get_acf(sequence):
+    correlation = np.correlate(sequence, sequence, mode='same')
+
+    normalization = np.dot(sequence, sequence)
+    res = correlation / normalization
+
+    return [round(num, 7) for num in res]
+
+
+def get_sequence_indexes(sequence):
+    res = [i for i in range(len(sequence))]
+    return res
 
 
 def get_accompanying_matrix(polynomial, degree):
@@ -58,7 +79,8 @@ def get_polynomial_degrees(polynomial):
 
     degrees = []
     for i in range(len(polynomial)):
-        if polynomial[i] == '1': degrees.append(i)
+        if polynomial[i] == '1':
+            degrees.append(i)
     degrees.sort()
 
     return degrees

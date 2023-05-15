@@ -10,4 +10,5 @@ class OutputData(BaseModel):
     hamming_weight: int = 0
     register_states: List[str]
     accompanying_matrix: List[str] = []
-
+    prbs_indexes: List[int] = []
+    acf: List[float] = []
