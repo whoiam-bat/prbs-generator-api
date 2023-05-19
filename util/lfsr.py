@@ -52,11 +52,14 @@ def get_acf(sequence):
     normalization = np.dot(sequence, sequence)
     res = correlation / normalization
 
-    return [round(num, 7) for num in res]
+    temp = [round(num, 7) for num in res]
+    new_arr = [1] + temp[:temp.index(1)] + temp[temp.index(1) + 1:] + [1]
+
+    return new_arr
 
 
 def get_sequence_indexes(sequence):
-    res = [i for i in range(len(sequence))]
+    res = [i for i in range(len(sequence) + 1)]
     return res
 
 
