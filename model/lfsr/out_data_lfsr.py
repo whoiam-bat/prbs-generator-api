@@ -7,8 +7,8 @@ class OutputData(BaseModel):
     rang_formula: int
     rang_experimental: int
     polynomial_type: str
-    hamming_weight: int = 0
+    hamming_weight: int
     register_states: List[str]
-    accompanying_matrix: List[str] = []
-    prbs_indexes: List[int] = []
-    acf: List[float] = []
+    accompanying_matrix: List[str]
+    prbs_indexes: List[int]
+    acf: List[float]
