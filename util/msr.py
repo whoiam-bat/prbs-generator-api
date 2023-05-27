@@ -1,13 +1,11 @@
-import math
-
-import numpy as np
 import copy
+import numpy as np
 
 
 def generate_prbs(rankA, rankB, polyA, polyB, rankS, it, jt):
     matrix_a = generate_matrix_a(rankA, polyA)
     matrix_b = generate_matrix_b(rankB, polyB)
-    matrix_s = generate_init_matrix_s(rankS, it, jt)
+    matrix_s = generate_init_matrix_s(rankS, rankA, rankB)
 
     period_a = (2 ** rankA) - 1
     period_b = (2 ** rankB) - 1
@@ -16,8 +14,8 @@ def generate_prbs(rankA, rankB, polyA, polyB, rankS, it, jt):
     result = {
         'matrA': matrix_to_str_arr(matrix_a), 'matrB': matrix_to_str_arr(matrix_b),
         'periodA': period_a, 'periodB': period_b, 'stateMatrixS': [matrix_to_str_arr(matrix_s)],
-        'analS': period_s, 'experimentalS': 0, 'hammingWeightPractice': 0,
-        'prbs': '', 'prbsIndexes': [], 'acf': []
+        'analS': period_s, 'experimentalS': 0, 'hammingWeightPractice': get_anal_hamming(rankA, rankB, rankS),
+        'hammingWeightTheoretical': 0, 'polynomialA': '', 'polynomialB': '', 'prbs': '', 'prbsIndexes': [], 'acf': []
     }
 
     numpy_a = np.array(matrix_a)
@@ -28,7 +26,7 @@ def generate_prbs(rankA, rankB, polyA, polyB, rankS, it, jt):
     while(True):
         prbs_state = current_state[it - 1][jt - 1]
         if prbs_state == 1:
-            result['hammingWeightPractice'] += 1
+            result['hammingWeightTheoretical'] += 1
         result['prbs'] += str(prbs_state)
 
         temp = current_state.tolist()
@@ -38,10 +36,30 @@ def generate_prbs(rankA, rankB, polyA, polyB, rankS, it, jt):
         if np.array_equal(current_state, numpy_s):
             break
 
+    result['polynomialA'] = get_function(polyA)
+    result['polynomialB'] = get_function(polyB)
     result['experimentalS'] = len(result['prbs'])
     result['prbsIndexes'] = get_sequence_indexes(result['prbs'])
     result['acf'] = get_acf([int(x) for x in result['prbs']])
 
+    return result
+
+
+def get_anal_hamming(rankA, rankB, rankS):
+    return rankS * 2 ** (rankB + rankA - rankS - 1)
+
+
+def get_function(polynomial):
+    binaryArray = [1]
+    binaryArray += poly_to_num_arr(polynomial)
+    result = ''
+    length = len(binaryArray)
+    for i, curr in enumerate(binaryArray):
+        if curr == 1:
+            if i == length - 1:
+                result += "1"
+            else:
+                result += f"x^{length - i - 1} + "
     return result
 
 
@@ -79,14 +97,18 @@ def generate_matrix_b(rankB, polyB):
     return matrix.tolist()
 
 
-def generate_init_matrix_s(rankS, it, jt):
-    full_s = [[int(i == j) for j in range(rankS)] for i in range(rankS)]
-
-    return [row[jt:] for row in full_s[it:]]
+def generate_init_matrix_s(rankS, rankA, rankB):
+    matrix = [[0 for _ in range(rankB)] for _ in range(rankA)]
+    for i in range(rankA):
+        for j in range(rankB):
+            if i < rankS:
+                if i == j:
+                    matrix[i][j] = 1
+    print(matrix)
+    return matrix
 
 
 def get_acf(sequence):
-
     correlation = np.correlate(sequence, sequence, mode='same')
 
     normalization = np.dot(sequence, sequence)
