@@ -11,6 +11,9 @@ class OutputData(BaseModel):
     analS: int
     experimentalS: int
     hammingWeightPractice: int
+    hammingWeightTheoretical: int
+    polynomialA: str
+    polynomialB: str
     prbs: str
     prbsIndexes: List[int]
     acf: List[float]

@@ -6,8 +6,6 @@ class InputData(BaseModel):
     rankB: int = Field(ge=1)
     polynomialA: str
     polynomialB: str
-    polynomial_gf2A: str
-    polynomial_gf2B: str
 
     rankS: int = Field(ge=1)
     i: int
