@@ -40,13 +40,17 @@ def generate_prbs(rankA, rankB, polyA, polyB, rankS, it, jt):
     result['polynomialB'] = get_function(polyB)
     result['experimentalS'] = len(result['prbs'])
     result['prbsIndexes'] = get_sequence_indexes(result['prbs'])
-    result['acf'] = get_acf([int(x) for x in result['prbs']])
+    result['acf'] = get_acf(convert_prbs_for_acf([int(x) for x in result['prbs']]))
 
     return result
 
 
+def convert_prbs_for_acf(sequence):
+    return [1 if it == 1 else -1 for it in sequence]
+
+
 def get_anal_hamming(rankA, rankB, rankS):
-    return rankS * 2 ** (rankB + rankA - rankS - 1)
+    return ((2 ** rankS) - 1) * (2 ** (rankB + rankA - rankS - 1))
 
 
 def get_function(polynomial):
@@ -104,7 +108,6 @@ def generate_init_matrix_s(rankS, rankA, rankB):
             if i < rankS:
                 if i == j:
                     matrix[i][j] = 1
-    print(matrix)
     return matrix
 
 
