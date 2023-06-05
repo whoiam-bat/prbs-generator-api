@@ -41,7 +41,7 @@ def generate_prbs(degree, polynomial, polynomial_gf2):
         result['polynomial_type'] = ' S-sequence'
 
     result['prbs_indexes'] = get_sequence_indexes(result['prbs'])
-    result['acf'] = convert_prbs_for_acf(get_acf([int(x) for x in result['prbs']]))
+    result['acf'] = get_acf(convert_prbs_for_acf([int(x) for x in result['prbs']]))
 
     return result
 
