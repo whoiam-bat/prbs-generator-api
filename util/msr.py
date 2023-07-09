@@ -1,4 +1,6 @@
 import copy
+import math
+
 import numpy as np
 
 
@@ -9,13 +11,12 @@ def generate_prbs(rankA, rankB, polyA, polyB, rankS, it, jt):
 
     period_a = (2 ** rankA) - 1
     period_b = (2 ** rankB) - 1
-    period_s = period_b * period_a
 
     result = {
         'matrA': matrix_to_str_arr(matrix_a), 'matrB': matrix_to_str_arr(matrix_b),
         'periodA': period_a, 'periodB': period_b, 'stateMatrixS': [matrix_to_str_arr(matrix_s)],
-        'analS': period_s, 'experimentalS': 0, 'hammingWeightPractice': get_anal_hamming(rankA, rankB, rankS),
-        'hammingWeightTheoretical': 0, 'polynomialA': '', 'polynomialB': '', 'prbs': '', 'prbsIndexes': [], 'acf': []
+        'analS': 0, 'theorS': 0, 'hammingWeightTheoretical': 0,
+        'hammingWeightPractice': 0, 'polynomialA': '', 'polynomialB': '', 'prbs': '', 'prbsIndexes': [], 'acf': []
     }
 
     numpy_a = np.array(matrix_a)
@@ -26,7 +27,7 @@ def generate_prbs(rankA, rankB, polyA, polyB, rankS, it, jt):
     while(True):
         prbs_state = current_state[it - 1][jt - 1]
         if prbs_state == 1:
-            result['hammingWeightTheoretical'] += 1
+            result['hammingWeightPractice'] += 1
         result['prbs'] += str(prbs_state)
 
         temp = current_state.tolist()
@@ -38,9 +39,16 @@ def generate_prbs(rankA, rankB, polyA, polyB, rankS, it, jt):
 
     result['polynomialA'] = get_function(polyA)
     result['polynomialB'] = get_function(polyB)
-    result['experimentalS'] = len(result['prbs'])
+    result['analS'] = len(result['prbs'])
     result['prbsIndexes'] = get_sequence_indexes(result['prbs'])
     result['acf'] = get_acf(convert_prbs_for_acf([int(x) for x in result['prbs']]))
+
+    if period_a == period_b:
+        result['hammingWeightTheoretical'] = result['hammingWeightPractice']
+        result['theorS'] = math.lcm(period_b, period_a)
+    else:
+        result['hammingWeightTheoretical'] = get_theor_hamming(rankA, rankB, rankS)
+        result['theorS'] = period_a * period_b
 
     return result
 
@@ -49,7 +57,7 @@ def convert_prbs_for_acf(sequence):
     return [1 if it == 1 else -1 for it in sequence]
 
 
-def get_anal_hamming(rankA, rankB, rankS):
+def get_theor_hamming(rankA, rankB, rankS):
     return ((2 ** rankS) - 1) * (2 ** (rankB + rankA - rankS - 1))
 
 

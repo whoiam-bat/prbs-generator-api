@@ -9,7 +9,7 @@ class OutputData(BaseModel):
     periodB: int
     stateMatrixS: List[List[str]]
     analS: int
-    experimentalS: int
+    theorS: int
     hammingWeightPractice: int
     hammingWeightTheoretical: int
     polynomialA: str
