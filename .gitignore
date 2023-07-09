@@ -29,3 +29,7 @@ venv/
 *~
 .*.sw?
 
+.space
+requirements.txt
+Spacefile
+Discovery.md
