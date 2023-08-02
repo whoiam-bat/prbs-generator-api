@@ -62,4 +62,8 @@ predict the output of the MFSR algorithm from its previous state.
 
 ## Call API endpoint
 
-``http://127.0.0.1:8000/docs`` - this is a main page with documentation to this API.
+`http://127.0.0.1:8000/docs` - this is a main page with documentation to this API, if you are going to run locally.
+
+`https://generatorapi-1-a7624134.deta.app/docs` - this is the same API but deployed to the remote server.
+
+`https://prbs-generator.netlify.app` - this is the URL to get complete application.
