@@ -17,7 +17,7 @@ origins = [
 ]
 
 app = FastAPI(
-    title='PRBS generator API'
+    title='PRBS-generator API'
 )
 
 app.add_middleware(
