@@ -12,8 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
     "http://localhost:4200",
-    "https://prbs-generator.netlify.app",
-    "https://oleksii-drabchak-prbs-client.azurewebsites.net"
+    "https://binary-sequence-generator.netlify.app/"
 ]
 
 app = FastAPI(
